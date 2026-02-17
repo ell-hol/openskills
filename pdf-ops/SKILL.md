@@ -660,23 +660,85 @@ c.drawString(72, height - 120, "Professional document content goes here.")
 c.save()
 ```
 
-#### Subscripts and Superscripts
+#### Advanced ReportLab Features
 
-**CRITICAL**: Never use Unicode subscript/superscript characters (₀₁₂₃₄₅₆₇₈₉, ⁰¹²³⁴⁵⁶⁷⁸⁹) in ReportLab PDFs. The built-in fonts do not include these glyphs, causing them to render as solid black boxes.
-
-Use ReportLab's XML markup tags instead:
+**HRFlowable** - Horizontal rules for section dividers:
 ```python
-from reportlab.platypus import Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
-
-styles = getSampleStyleSheet()
-
-# Subscripts: use <sub> tag
-chemical = Paragraph("H<sub>2</sub>O", styles['Normal'])
-
-# Superscripts: use <super> tag
-squared = Paragraph("x<super>2</super> + y<super>2</super>", styles['Normal'])
+from reportlab.platypus import HRFlowable
+story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor('#ccc')))
 ```
+
+**Custom ParagraphStyles** - Full control over typography:
+```python
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
+
+# Justified body text with custom line height
+body_style = ParagraphStyle('Body',
+    fontSize=11,
+    leading=17,              # Line height (should be ~1.4-1.6x fontSize)
+    alignment=TA_JUSTIFY,
+    spaceAfter=10,
+    textColor=colors.HexColor('#2d3748'))
+
+# Block quote with indentation
+abstract_style = ParagraphStyle('Abstract',
+    fontSize=10.5,
+    leading=16,
+    leftIndent=30,           # Indent from left
+    rightIndent=30,          # Indent from right
+    alignment=TA_JUSTIFY)
+
+# References with hanging indent
+ref_style = ParagraphStyle('Ref',
+    fontSize=10,
+    leftIndent=20,
+    firstLineIndent=-20)     # Negative = hanging indent
+
+# Equations: centered italic
+eq_style = ParagraphStyle('Equation',
+    fontSize=12,
+    alignment=TA_CENTER,
+    fontName='Helvetica-Oblique',
+    spaceBefore=8, spaceAfter=8)
+```
+
+**Page X of Y numbering** - Requires custom canvas:
+```python
+from reportlab.pdfgen import canvas
+
+class NumberedCanvas(canvas.Canvas):
+    def __init__(self, *args, **kwargs):
+        canvas.Canvas.__init__(self, *args, **kwargs)
+        self._saved_page_states = []
+
+    def showPage(self):
+        self._saved_page_states.append(dict(self.__dict__))
+        self._startPage()
+
+    def save(self):
+        num_pages = len(self._saved_page_states)
+        for i, state in enumerate(self._saved_page_states):
+            self.__dict__.update(state)
+            self.setFont("Helvetica", 9)
+            self.drawCentredString(PAGE_W/2, 0.5*inch, f"Page {i+1} of {num_pages}")
+            canvas.Canvas.showPage(self)
+        canvas.Canvas.save(self)
+
+# Use with doc.build:
+doc.build(story, canvasmaker=NumberedCanvas)
+```
+
+**Subscripts and Superscripts** - Use XML tags, never Unicode:
+```python
+# Subscripts: <sub> tag
+Paragraph("H<sub>2</sub>O", styles['Normal'])
+
+# Superscripts: <super> tag
+Paragraph("E = mc<super>2</super>", styles['Normal'])
+```
+
+**CRITICAL**: Never use Unicode subscript/superscript characters (₀₁₂, ⁰¹²). ReportLab's built-in fonts don't include these glyphs—they render as black boxes.
 
 #### Page Numbers and Headers
 ```python
