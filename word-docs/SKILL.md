@@ -388,6 +388,67 @@ const doc = new Document({
 });
 ```
 
+## QA (Required)
+
+**Assume there are problems. Your job is to find them.**
+
+### Content QA
+
+After creating the document, verify content:
+
+```bash
+# Extract text to verify content (requires pandoc)
+pandoc document.docx -o document.md
+cat document.md
+```
+
+Check for:
+- Missing sections or content
+- Typos or formatting errors
+- Tables rendering correctly
+- Images displaying properly
+
+### Visual QA
+
+Convert to images for visual inspection:
+
+```bash
+# Convert to PDF then images (requires LibreOffice + poppler)
+libreoffice --headless --convert-to pdf document.docx
+pdftoppm -jpeg -r 150 document.pdf page
+# Creates page-01.jpg, page-02.jpg, etc.
+```
+
+Inspect images for:
+- **Tables**: Columns not collapsed, text not stacking vertically
+- **Text overflow**: Content cut off at margins
+- **Images**: Rendering correctly, not broken
+- **Headers/footers**: Displaying on correct pages
+- **Page breaks**: In expected locations
+- **Fonts**: Rendering correctly, no substitution issues
+
+### Common Issues to Check
+
+- [ ] **Table widths**: Columns should be properly sized (use DXA widths)
+- [ ] **Cell shading**: Use `ShadingType.CLEAR` not SOLID
+- [ ] **Page size**: US Letter vs A4 - set explicitly
+- [ ] **Margins**: Content fits within margins
+- [ ] **Page numbers**: Incrementing correctly
+
+### Verification Loop
+
+1. Generate document
+2. Extract text and verify content
+3. Convert to images and inspect visually
+4. **List issues found** (if none, look again more critically)
+5. Fix issues
+6. **Re-verify** - one fix often creates another problem
+7. Repeat until clean
+
+**Do not declare success until you've completed at least one fix-and-verify cycle.**
+
+---
+
 ## Dependencies
 
 - `docx` (npm package)

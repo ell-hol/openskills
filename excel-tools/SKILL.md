@@ -315,6 +315,60 @@ ws.delete_cols(2)
 wb.save("modified.xlsx")
 ```
 
+## QA (Required)
+
+**Assume there are problems. Your job is to find them.**
+
+### Formula Verification
+
+After creating or modifying a file with formulas:
+
+1. **Open in Excel/LibreOffice** to verify formulas calculate correctly
+2. **Check for formula errors**: `#REF!`, `#DIV/0!`, `#VALUE!`, `#N/A`, `#NAME?`
+3. **Test with sample data**: Verify 2-3 references pull correct values
+
+```python
+from openpyxl import load_workbook
+
+wb = load_workbook("output.xlsx", data_only=True)
+ws = wb.active
+
+# Check for common formula errors
+error_types = ['#REF!', '#DIV/0!', '#VALUE!', '#N/A', '#NAME?', '#NULL!']
+errors = []
+for row in ws.iter_rows():
+    for cell in row:
+        if cell.value in error_types:
+            errors.append(f"{cell.coordinate}: {cell.value}")
+
+if errors:
+    print("Formula errors found:")
+    for e in errors:
+        print(f"  {e}")
+```
+
+### Verification Checklist
+
+- [ ] **Column mapping correct**: Excel column 64 = BL, not BK
+- [ ] **Row offset correct**: DataFrame row 5 = Excel row 6 (1-indexed)
+- [ ] **No NaN values**: Check with `pd.notna()` before writing
+- [ ] **Division by zero**: Check denominators in formulas
+- [ ] **Cross-sheet references**: Use correct format `Sheet1!A1`
+- [ ] **Formatting applied**: Verify colors, fonts, borders render correctly
+
+### Verification Loop
+
+1. Create/modify file
+2. Open in Excel and check formulas
+3. **List issues found**
+4. Fix issues
+5. **Re-verify**
+6. Repeat until clean
+
+**Do not declare success until you've completed at least one verify cycle.**
+
+---
+
 ## Dependencies
 
 - `openpyxl` - Excel file manipulation with formatting

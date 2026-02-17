@@ -465,6 +465,67 @@ Choose colors that match your topic - don't default to generic blue:
 
 ---
 
+## QA (Required)
+
+**Assume there are problems. Your job is to find them.**
+
+Your first render is almost never correct. Approach QA as a bug hunt, not a confirmation step. If you found zero issues on first inspection, you weren't looking hard enough.
+
+### Content QA
+
+Extract text and verify content:
+
+```bash
+# Using markitdown (pip install markitdown[pptx])
+python -m markitdown output.pptx
+```
+
+Check for missing content, typos, wrong order.
+
+### Visual QA
+
+Convert slides to images for visual inspection:
+
+```bash
+# Convert to PDF then images (requires LibreOffice + poppler)
+libreoffice --headless --convert-to pdf output.pptx
+pdftoppm -jpeg -r 150 output.pdf slide
+# Creates slide-01.jpg, slide-02.jpg, etc.
+```
+
+Inspect each slide for:
+- **Overlapping elements**: Text through shapes, lines through words
+- **Text overflow**: Cut off at edges or box boundaries
+- **Elements too close**: < 0.3" gaps or cards nearly touching
+- **Uneven gaps**: Large empty area in one place, cramped in another
+- **Insufficient margins**: < 0.5" from slide edges
+- **Misaligned elements**: Columns or similar elements not aligned
+- **Low contrast**: Light text on light backgrounds
+- **Charts not rendering**: Blank space where chart should be
+
+### Common Issues Checklist
+
+- [ ] **Hex colors**: No `#` prefix (causes corruption)
+- [ ] **Shadow objects**: Fresh object each time (don't reuse)
+- [ ] **Chart API**: Use `pres.charts.BAR` not `pres.ChartType.bar`
+- [ ] **Shape API**: Use `pres.shapes.RECTANGLE` not `pres.ShapeType.rect`
+- [ ] **Text margin**: Set `margin: 0` when aligning with shapes
+- [ ] **Multi-line text**: Use `breakLine: true` between items
+
+### Verification Loop
+
+1. Generate slides
+2. Convert to images
+3. Inspect visually
+4. **List issues found** (if none found, look again more critically)
+5. Fix issues
+6. **Re-verify affected slides** - one fix often creates another problem
+7. Repeat until a full pass reveals no new issues
+
+**Do not declare success until you've completed at least one fix-and-verify cycle.**
+
+---
+
 ## Dependencies
 
 - `pptxgenjs` (npm package)
