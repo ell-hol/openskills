@@ -6,10 +6,10 @@ Lightweight skill documentation for common document creation tasks.
 
 | Skill | Description |
 |-------|-------------|
-| [pdf-ops](pdf-ops/SKILL.md) | Create and manipulate PDF documents |
-| [excel-tools](excel-tools/SKILL.md) | Create and edit Excel spreadsheets |
-| [word-docs](word-docs/SKILL.md) | Create Word documents with tables and formatting |
-| [slide-creator](slide-creator/SKILL.md) | Create PowerPoint presentations with charts |
+| [pdf](pdf/SKILL.md) | Create and manipulate PDF documents |
+| [xlsx](xlsx/SKILL.md) | Create and edit Excel spreadsheets |
+| [docx](docx/SKILL.md) | Create Word documents with tables and formatting |
+| [pptx](pptx/SKILL.md) | Create PowerPoint presentations with charts |
 
 ## Test Prompts
 

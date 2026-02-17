@@ -1,6 +1,6 @@
 ---
-name: excel-tools
-description: "Create, read, and modify Excel spreadsheets (.xlsx). Triggers when user mentions Excel, spreadsheet, .xlsx, needs data analysis, formulas, cell formatting, or chart creation."
+name: xlsx
+description: "Create, read, and modify Excel spreadsheets (.xlsx) with openpyxl and pandas. Triggers on Excel, spreadsheet, .xlsx, data analysis, formulas, or charts."
 license: MIT
 ---
 

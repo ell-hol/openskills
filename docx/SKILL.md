@@ -1,6 +1,6 @@
 ---
-name: word-docs
-description: "Create and edit Word documents (.docx). Triggers when user mentions Word, .docx, document creation, reports, memos, letters, or needs professional document formatting with tables, images, and styles."
+name: docx
+description: "Create and edit Word documents (.docx) with the docx npm package. Triggers on Word, .docx, reports, memos, letters, or professional document formatting needs."
 license: MIT
 ---
 

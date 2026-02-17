@@ -1,6 +1,6 @@
 ---
-name: slide-creator
-description: "Create PowerPoint presentations (.pptx) with JavaScript. Triggers when user mentions slides, deck, presentation, .pptx, or needs to generate visual content for meetings, pitches, or talks."
+name: pptx
+description: "Create PowerPoint presentations (.pptx) with PptxGenJS. Triggers on slides, deck, presentation, .pptx, or visual content for meetings, pitches, and talks."
 license: MIT
 ---
 
